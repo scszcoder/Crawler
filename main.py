@@ -30,7 +30,11 @@ from readScreen import *
 
 from processHTML import *
 from scrapeLastNames import *
+from getDetails import *
 from scrapeFirstNamesFromLastNames import *
+from scrapeMaleFemaleFirstNames import *
+
+from sendCloud import *
 
 # this function scrape names first.
 # first scrape all last names.
@@ -50,19 +54,7 @@ from scrapeFirstNamesFromLastNames import *
 
 
 
-# this function opens the browser for further work
-# for single scraping, use portable firefox.
-# for parallel scraping, use ADS power.
-#
-def open_browser(mode):
-    if mode == 'single':
-        # open portable firefox, IP burger extension and the account with ipb should've been set up already.
-        p_firefox = subprocess.Popen(['C:/Users/scadmin/Downloads/FirefoxPortable/FireFoxPortable.exe'])
-        time.sleep(1)
-    else:
-        print('parallel work')
-        p_adspower = subprocess.Popen(['C:/Program Files (x86)/AdsPower/AdsPower.exe'])
-        time.sleep(1)
+
 
 # this function make the plan for the current run.
 # Note: because of the duplicated names, a single name could create
@@ -104,148 +96,48 @@ def run_multi_scraper(plans):
 # 512KB per csv file.
 winloc = [0, 0]
 open_portable_firefox(2000, 3000, winloc)
+time.sleep(5)
+
+cloud_session = set_up_cloud()
+# scrape_full_names(winloc)
+# scrape_details(winloc)
+
+# scrape order:
+# 1) male female first names
+scrape_male_female_first_names(winloc, cloud_session)
+
+# 2) all last names in USA, save in local files.
 scrape_last_names(winloc)
-# a = get_last_names('C:/CrawlerData/pages/lastname00.html')
-# a = get_first_name_pages('C:/CrawlerData/pages/fullname00.htm')
-# b = get_first_names('C:/CrawlerData/pages/fullname00.htm')
-# c = get_details_info('C:/CrawlerData/pages/details00.htm')
-# print(a)
 
+# 3) all full names in USA, save in local files.
+scrape_full_names(winloc)
 
-# Windows
-#chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
-# webbrowser.get(chrome_path).open(url)
+# 3) all full names in USA, save in local files.
+scrape_details(winloc, cloud_session)
+
+##############################################################################
+# code snippet testing graphQL query string format.
+##############################################################################
+# The following is a proven working string
+# important note:
+#  *) key needs no quote
+#  *) value needs double quote ", not single quote '
+#  *) array value []
+#  *) date must be XXXX-XX-XX, single digit month or day needs to have 0 in front
+#  *) minimum email format is "
+# mutation MyMutation {
+#   createPeople(input: [{birthday: "1980-02-01", emails: ["abd@def.com"], firstName: "abc", lastName: "def", phones: ["512-333-5555", "512-222-3333"], addrs: [{city: "San Jose", state: "CA", street1: "abc def", zip: "78739", street2: "", endDate: "2000-10-10", startDate: "1998-10-10"}, {city: "San Jose", state: "CA", street1: "abc def", zip: "78739", street2: "", endDate: "2010-12-12", startDate: "1990-11-11"}], middleName: "", suffix: ""}, {birthday: "1980-02-01", emails: ["abd@def.com"], firstName: "abc", lastName: "def", phones: ["512-333-5555", "512-222-3333"], addrs: [{city: "San Jose", state: "CA", street1: "abc def", zip: "78739", street2: "", endDate: "2000-10-10", startDate: "1998-10-10"},
+#     {city: "San Jose", state: "CA", street1: "abc def", zip: "78739", street2: "", endDate: "2010-12-12", startDate: "1990-11-11"}], middleName: "", suffix: ""}]) {
+#     result
+#   }
+# }
+###################################end of snippet ############################################
+
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print('PyCharm')
-
-#open ADS power
-
-# p_adspower = subprocess.Popen(['C:/Program Files (x86)/AdsPower/AdsPower.exe'])
-# time.sleep(1)
-
-# now click on batch input icon
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/batchinput.png')
-# time.sleep(2)
-
-# now select platform, set it to 'other'
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/adsplatformsel.png')
-# time.sleep(1)
-# pyautogui.move(0, 90)
-# pyautogui.scroll(-1000)
-# time.sleep(1)
-# pyautogui.move(0, 400)
-# pyautogui.click()
-# time.sleep(1)
-
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/othersite.png')
-# time.sleep(1)
-# pyautogui.write('www.google.com')
-
-
-
-# at the pop-up, click on upload icon
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/upload0.png')
-# time.sleep(2)
-
-# at the dialog window, do 3 things:
-# 1) set the profile directory connect. 'C:/AmazonSeller/SelfSwipe' :
-# 2) set the file type correctly 'All Files'
-# 3) set the file name correctly 'user_list2021-06-03_47_56'
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/finput0_cn.png')
-# time.sleep(1)
-# pyautogui.write('C:\\AmazonSeller\\SelfSwipe\\')
-# time.sleep(1)
-# pyautogui.click()
-# time.sleep(1)
-# pyautogui.press('enter')
-# time.sleep(1)
-#
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/ftype0_cn.png')
-# time.sleep(1)
-# pyautogui.move(0, 90)
-# time.sleep(1)
-# pyautogui.click()
-# time.sleep(1)
-
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/fninput0_cn.png')
-# time.sleep(1)
-# pyautogui.write('user_list2021-06-03_47_56.xls')
-# time.sleep(1)
-# # pyautogui.press('enter')
-# time.sleep(1)
-
-# ftype_button = pyautogui.locateOnScreen('ftype0_cn.png')
-# ftype_loc = pyautogui.center(ftype_button)
-# pyautogui.moveTo(ftype_loc)
-# pyautogui.move(320, 60)
-#
-# pyautogui.click()
-# time.sleep(1)
-#
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/adsok0.png')
-# time.sleep(5)
-#
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/adspopok0.png')
-
-# -----------------------
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/sncheckbox0.png')
-# time.sleep(1)
-# pyautogui.move(-120, -12)
-# time.sleep(1)
-# pyautogui.click()
-# time.sleep(2)
-# pyautogui.click('c:/AmazonSeller/JSRPA/aidata/openall0.png')
-#
-# time.sleep(60)
-#
-# # 'NNN - SunBrowser' will be the window title, ex: '291 - SunBrowser'
-# print(gw.getAllTitles())
-
-# -----------------------
-
-# take a snap shot again.
-
-# analyze the screen again,
-# before "Search Alphabetically" are the names.
-# find all "last name", then each one of them, the immediately word before, if not null, then
-# it's the first name.
-# all the digits between "Page:" and "People Directory" are the # of pages.
-
-
-#im = Image.open("c:/AmazonSeller\JSRPA\nameaddr\A01.PNG")
-#im.show()
-#im.close()
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\Tesseract.exe'
-#
-# print(pytesseract.image_to_string(Image.open('c:\AmazonSeller\JSRPA\Capture.JPG')))
-#
-#
-# print(pytesseract.image_to_boxes(Image.open('c:\AmazonSeller\JSRPA\Capture.JPG')))
-#
-
-
-
-# img = cv2.imread('c:\AmazonSeller\JSRPA\Capture.JPG')
-
-#left is the distance from the upper-left corner of the bounding box, to the left border of the image.
-#top is the distance from the upper-left corner of the bounding box, to the top border of the image.
-#width and height are the width and height of the bounding box.
-#conf is the model's confidence for the prediction for the word within that bounding box.
-# If conf is -1, that means that the corresponding bounding box contains a block of text,
-# rather than just a single word.
-# d = pytesseract.image_to_data(img, output_type=Output.DICT)
-# n_boxes = len(d['level'])
-# for i in range(n_boxes):
-#     (x, y, w, h) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
-#     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-#
-# cv2.imshow('img', img)
-# cv2.waitKey(0)
-#
-# time.sleep(3)
 
 
 # book = xlrd.open_workbook("myfile.xls")
@@ -266,11 +158,6 @@ if __name__ == '__main__':
 # subprocess.call(["taskkill","/F","/IM","firefox.exe"])
 #
 # p1 = subprocess.Popen(['workspace/eclipse/eclipse'])
-# p2 = subprocess.Popen(['../../usr/bin/jvisualvm'])
-# p3 = subprocess.Popen(['docker-compose', '-f', 's3_dynamodb.yml', 'up'])
-
-# p3.terminate()
-# p2.terminate()
 # p1.terminate()
 
 
@@ -278,11 +165,7 @@ if __name__ == '__main__':
 # Running the aforementioned command and saving its output
 # output = os.popen('wmic process get description, processid').read()
 
-# Displaying the output
-# print(output)
-
 # print(gw.getAllTitles())
-
 # print(gw.getAllWindows())
 
 

@@ -38,7 +38,7 @@ def open_url_then_save_page(win_loc, url, html_path, html_file_name):
     pyautogui.hotkey('ctrl', 't')
     pyautogui.write(url)
     pyautogui.hotkey('enter')
-    time.sleep(5)
+    time.sleep(8)
 
     # now save the web page into a file.
     pyautogui.hotkey('ctrl', 's')
@@ -55,37 +55,41 @@ def open_url_then_save_page(win_loc, url, html_path, html_file_name):
 
     saveas_diag_win = gw.getWindowsWithTitle(saveas_diag_title)[0]
     saveas_diag_win.moveTo(win_loc[0], win_loc[0])
-    time.sleep(1)
+    time.sleep(5)
 
     pyautogui.screenshot(fn, region=(win_loc[0], win_loc[1], 1600, 900))
     dir_loc = find_dir_name_box(fn)
-    log_1(dir_loc)
+    # log_1(dir_loc)
     pyautogui.moveTo(dir_loc[1], dir_loc[0])
     time.sleep(1)
     pyautogui.click()
     time.sleep(1)
     pyautogui.press('backspace')
     time.sleep(1)
-    log_1(str(pathlib.PureWindowsPath(html_path)))
+    # log_1(str(pathlib.PureWindowsPath(html_path)))
     pyautogui.write(str(pathlib.PureWindowsPath(html_path)))
     time.sleep(1)
     pyautogui.press('enter')
     time.sleep(1)
 
     loc = find_file_name_box(fn)
-    log_1(loc)
+    # log_1(loc)
     pyautogui.moveTo(loc[1], loc[0])
     time.sleep(1)
     pyautogui.click()
     time.sleep(1)
     pyautogui.press('backspace')
-    time.sleep(1)
+    time.sleep(2)
     pyautogui.write(html_file_name)
-    time.sleep(1)
+    time.sleep(2)
 
     button_image = 'C:/CrawlerData/fftemplates/page_save_as_save_button.png'
     pyautogui.click(button_image)
-    time.sleep(1)
+    time.sleep(5)
+    # close the tab, back to where it was.
+    pyautogui.hotkey('ctrl', 'w')
+    time.sleep(3)
+
 
 
 # input: screen save file name.
@@ -98,7 +102,7 @@ def find_dir_name_box(sfn):
     icon_height = template.shape[0]
     icon_width = template.shape[1]
     result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
-    log_1(result)
+    # log_1(result)
     loc = np.where(result >= 0.85)
     count = 0
     # get the full star match count.
@@ -126,7 +130,7 @@ def find_file_name_box(sfn):
     icon_height = template.shape[0]
     icon_width = template.shape[1]
     result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
-    log_1(result)
+    # log_1(result)
     loc = np.where(result >= 0.85)
     count = 0
     # get the full star match count.
@@ -134,7 +138,7 @@ def find_file_name_box(sfn):
         count = count + 1
 
     if count > 0:
-        log_1(loc)
+        # log_1(loc)
         match = (loc[0][0], loc[1][0])
         input_loc = (match[0] + int(0.5 * icon_height), match[1]+2*icon_width)
     else:
